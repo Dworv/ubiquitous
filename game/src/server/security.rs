@@ -4,6 +4,14 @@ pub type SkillArray = [f32; 4];
 pub struct ServerSecurity {
     pub skill_req: SkillArray,
     pub skill_req_root: SkillArray,
+    pub state: SecurityState
+}
+
+#[derive(Debug)]
+pub enum SecurityState {
+    Secure,
+    Compromised,
+    CompromisedRoot
 }
 
 impl ServerSecurity {

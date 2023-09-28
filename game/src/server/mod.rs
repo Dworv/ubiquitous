@@ -4,7 +4,7 @@ mod security;
 use std::fmt::Display;
 
 pub use fs::{File, FileSystem};
-pub use security::{AttackInfo, ServerSecurity};
+pub use security::{AttackInfo, ServerSecurity, SecurityState};
 
 #[derive(Debug)]
 pub struct Server {

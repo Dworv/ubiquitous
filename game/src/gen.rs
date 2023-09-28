@@ -1,7 +1,7 @@
 use petgraph::adj::NodeIndex;
 use rand::{thread_rng, Rng};
 
-use crate::{Sector, server::{Server, FileSystem, ServerSecurity}};
+use crate::{Sector, server::{Server, FileSystem, ServerSecurity, SecurityState}};
 
 pub fn gen_sector(level: f32) -> Sector {
     let base_req = if level == 1. { 1. } else { level * 5. };
@@ -72,6 +72,7 @@ fn gen_server(avg_skill: f32) -> Server {
         name: "bob".to_string(),
         fs: FileSystem::default(),
         sec: ServerSecurity {
+            state: SecurityState::Secure,
             skill_req,
             skill_req_root
         }
@@ -79,6 +80,5 @@ fn gen_server(avg_skill: f32) -> Server {
 }
 
 fn gen_skill(avg_skill: f32) -> f32 {
-    // thread_rng().gen_range((avg_skill-1.)..(avg_skill+1.))
-    avg_skill
+    thread_rng().gen_range((avg_skill-1.)..(avg_skill+1.))
 }
