@@ -1,2 +1,3 @@
 # ubiquitous
-A terminal game.
+A WIP terminal game.
+
