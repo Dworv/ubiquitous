@@ -25,9 +25,20 @@ pub fn lsdev(sector: &Sector, index: NodeIndex) -> Vec<String> {
 
 pub fn lsnet(sector: &Sector, index: NodeIndex) -> Vec<String> {
     let mut names = vec![];
-    for node in sector.node_indices() {
+    for node in sector.neighbors(index) {
         let server = sector.node_weight(node).unwrap();
         names.push(server.name.clone());
     }
     names
+}
+
+pub fn cat(sector: &Sector, index: NodeIndex, name: &str) -> Option<String> {
+    let server = sector.node_weight(index).unwrap();
+    let fs = &server.fs;
+    for file in &fs.files {
+        if file.name == name {
+            return Some(file.get_contents().clone());
+        }
+    }
+    None
 }

@@ -29,6 +29,17 @@ impl Terminal {
                 let (sector, server) = self.state.selected;
                 let sector = &mut self.state.sectors[sector];
                 match command {
+                    "cat" => {
+                        if let Some(name) = words.next() {
+                            if let Some(contents) = utils::cat(sector, server.into(), name) {
+                                println!("{}", contents);
+                            } else {
+                                println!("file not found");
+                            }
+                        } else {
+                            println!("usage: cat <file>");
+                        }
+                    }
                     "ls" => {
                         for name in utils::ls(sector, server.into()) {
                             println!("{}", name);
