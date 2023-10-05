@@ -1,4 +1,4 @@
-use std::io::stdin;
+use std::io::{stdin, stdout, Write};
 
 use crate::{
     gen::gen_sector,
@@ -23,11 +23,13 @@ impl Terminal {
     pub fn run(&mut self) {
         let fs = &mut self.state.sectors[0].node_weight_mut(0.into()).unwrap().fs;
         fs.files.push(File::new("bazinga".to_string()));
+        print!("user@{}:~$ ", self.state.sectors[0].node_weight(0.into()).unwrap().name);
+        stdout().flush().unwrap();
         for line in stdin().lines().map(|x| x.unwrap()) {
             let mut words = line.split(' ');
+            let (sector, server) = self.state.selected;
+            let sector = &mut self.state.sectors[sector];
             if let Some(command) = words.next() {
-                let (sector, server) = self.state.selected;
-                let sector = &mut self.state.sectors[sector];
                 match command {
                     "cat" => {
                         if let Some(name) = words.next() {
@@ -60,6 +62,8 @@ impl Terminal {
                     }
                 }
             }
+            print!("user@{}:~$ ", sector.node_weight(server.into()).unwrap().name);
+            stdout().flush().unwrap();
         }
     }
 }
