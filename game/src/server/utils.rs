@@ -56,13 +56,21 @@ pub fn lsnet(sector: &Sector, index: NodeIndex) -> Vec<(String, SecurityState)> 
     infos
 }
 
-pub fn cat(sector: &Sector, index: NodeIndex, name: &str) -> Option<String> {
+pub enum CatErr {
+    NotFound,
+    Unreadable
+}
+
+pub fn cat(sector: &Sector, index: NodeIndex, name: &str) -> Result<String, CatErr> {
     let server = sector.node_weight(index).unwrap();
     let fs = &server.fs;
     for file in &fs.files {
         if file.name == name {
-            return Some(file.get_contents().clone());
+            match file.content.get() {
+                Some(content) => Ok(content),
+                None => Err(CatErr::Unreadable),
+            };
         }
     }
-    None
+    Err(CatErr::NotFound)
 }

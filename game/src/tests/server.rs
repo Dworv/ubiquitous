@@ -3,10 +3,9 @@ use crate::server::*;
 #[test]
 fn fs_test_1() {
     let mut fs = FileSystem::default();
-    fs.files.push(File::new("test.txt".to_string()));
-    fs.files[0].set_contents("i am a contents :D".to_string());
+    fs.files.push(File { name: "test.txt".to_string(), content: FileContent::Text("i am a contents :D".to_string()) });
     assert_eq!(
-        fs.files[0].get_contents(),
+        fs.files[0].content.get().unwrap(),
         &"i am a contents :D".to_string()
     )
 }

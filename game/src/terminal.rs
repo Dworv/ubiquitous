@@ -2,8 +2,8 @@ use std::io::{stdin, stdout, Write};
 
 use crate::{
     gen::gen_sector,
-    server::{utils, AttackInfo, AttackKind, File, Server},
-    State,
+    server::{utils, AttackInfo, AttackKind, File, Server, FileContent},
+    State, tools::Tools,
 };
 
 pub struct Terminal {
@@ -17,13 +17,14 @@ impl Terminal {
                 sectors: vec![gen_sector(1.)],
                 selected: (0, 0),
                 skills: [1.; 4],
+                tools: Tools::default()
             },
         }
     }
 
     pub fn run(&mut self) {
         let fs = &mut self.state.sectors[0].node_weight_mut(0.into()).unwrap().fs;
-        fs.files.push(File::new("bazinga".to_string()));
+        fs.files.push(File { name: "bazinga".to_string(), content: FileContent::Text("oh".to_string()) });
         print!(
             "user@{}:~$ ",
             self.state.sectors[0].node_weight(0.into()).unwrap().name
@@ -81,10 +82,10 @@ impl Terminal {
                     }
                     "cat" => {
                         if let Some(name) = words.next() {
-                            if let Some(contents) = utils::cat(sector, server.into(), name) {
-                                println!("{}", contents);
-                            } else {
-                                println!("file not found");
+                            match utils::cat(sector, server.into(), name) {
+                                Ok(content) => println!("{}", content),
+                                Err(utils::CatErr::Unreadable) => println!("File content cannot be read"),
+                                Err(utils::CatErr::NotFound) => println!("File not found")
                             }
                         } else {
                             println!("usage: cat <file>");

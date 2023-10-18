@@ -1,3 +1,5 @@
+use crate::tools::Tools;
+
 #[derive(Debug, Default)]
 pub struct FileSystem {
     pub files: Vec<File>,
@@ -6,22 +8,31 @@ pub struct FileSystem {
 #[derive(Debug)]
 pub struct File {
     pub name: String,
-    contents: String,
+    pub content: FileContent
 }
 
-impl File {
-    pub fn new(name: String) -> Self {
-        File {
-            name,
-            contents: String::new(),
+#[derive(Debug)]
+pub enum FileContent {
+    Text(String),
+    Tool(Tools)
+}
+
+
+impl FileContent {
+    pub fn get(&self) -> Option<&String> {
+        match self {
+            FileContent::Text(contents) => Some(contents),
+            FileContent::Tool(_) => None,
         }
     }
 
-    pub fn get_contents(&self) -> &String {
-        &self.contents // Return self contents
-    }
-
-    pub fn set_contents(&mut self, contents: String) {
-        self.contents = contents;
+    pub fn set(&mut self, new_contents: String) -> Result<(), ()> {
+        match self {
+            FileContent::Text(contents) => {
+                *contents = new_contents;
+                Ok(())
+            },
+            FileContent::Tool(_) => Err(()),
+        }
     }
 }
